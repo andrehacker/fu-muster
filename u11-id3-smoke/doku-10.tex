@@ -1,0 +1,341 @@
+
+\documentclass{article}
+
+\usepackage[ngerman]{babel}                     %for german umlauts
+\usepackage[utf8]{inputenc}
+\usepackage{subfigure}
+\usepackage{float}
+%\usepackage[framed,autolinebreaks,useliterate]{mcode}
+%\usepackage[bw,framed,autolinebreaks,useliterate]{mcode}
+% \usepackage[ansinew]{inputenc}        %for german umlauts
+
+\usepackage{listings}
+
+\usepackage{graphicx}
+\usepackage{hyperref}
+
+\usepackage{amssymb}    %for different fonts
+\usepackage{amsmath}
+% Geht nicht: \usepackage{bbm}
+% \usepackage[usenames,dvips]{color} %only way to get it running with pdf:(
+% \usepackage[pdftex,usenames,dvipsnames]{color}        % does not work
+% \usepackage{color}
+\usepackage{verbatim}
+\usepackage{polynom}
+
+\usepackage{tikz}
+\usetikzlibrary{trees,shapes,snakes}
+
+\setlength{\parindent}{0pt}
+\addtolength{\hoffset}{-2cm}
+\addtolength{\voffset}{-1cm}
+\addtolength{\textheight}{3cm}
+\addtolength{\textwidth}{3cm}
+
+\newcommand{\im}{\operatorname{Im}}
+\newcommand{\rg}{\operatorname{rg}}
+\newcommand{\ggt}{\operatorname{ggT}}
+
+\lstset{ %
+  language=Matlab,                % the language of the code
+  frame=single,                   % adds a frame around the code
+  tabsize=2,
+  basicstyle=\footnotesize
+}
+
+\begin{document}
+
+\section*{\begin{center} Mustererkennung - Aufgabenblatt 11 \end{center}}
+\begin{center}
+  André Hacker und Dimitri Schachmann \\
+\end{center}
+
+
+\subsection*{1. Merkmale für Rauch}
+In der Aufgabenstellung gibt es viele Unbekannte: Wie sehen Labels aus, wie sollen wir klassifizieren, aus welchen und wie vielen Daten sollen wir lernen, bleibt es bei 3 Bildern pro Sequenz, usw. Einige Fragen wirken sich auch auf die Wahl und Modellierung der Features aus.
+Wir beschreiben und modellieren daher zuerst das Problem, und treffen entsprechende Annahmen.\\
+
+Bei jedem Machine-Learning Problem müssen folgende Fragen zuerst individuell geklärt werden:
+\begin{itemize}
+\item \textbf{Problemtyp}: Wir modellieren es als Multiclass classification problem. Jeder Pixel wird einer Klasse 'Rauch' oder 'Kein Rauch' zugeordnet (Siehe "Gestalt der Labels"). Bei d Pixeln gibt das $2^d$ mögliche Ausgaben, die man als Klassen interpretieren kann. Ein übergeordneter Classifier kann dann auf Basis eines Schwellenwertes entscheiden ob das Bild insgesamt als Rauch klassifiziert wird oder nicht. Man kann die Ausgaben reduzieren, indem man die Ausgabe und die Label verkleinert, d.h. man sagt dann nur aus ob in einem bestimmten Bereich es Ursprungsbildes Rauch ist oder nicht.
+\item \textbf{Gestalt der Eingabedaten} (Vor der Vorverarbeitung): 3 Bilder in Sequenz, Graustufen, mit konstanter Bildgröße $w \times h$. Kann alles in einen Vektor serialisiert werden.
+\item \textbf{Gestalt der Labels}: Bisher gibt es keine Labels. Unser Vorschlag: Eine Matrix in der Größe der Bilder ($w \times h$) die jeden Pixel klassifiziert mit Werten 0 (kein Rauch) und 1 (Rauch). Die Matrix kann als Vektor serialisiert werden.
+\item \textbf{Anzahl verfügbarer Daten:} Aktuell sind nur 3 Bildsequenzen vorhanden, was für das Training mit den uns bekannten Klassifikatoren völlig inakzeptabel ist. Damit kann kein Klassifikator trainiert werden (Verweis auf VC-Theory, die u.A. besagt, dass ein mächtigeres Modell mehr Eingabedaten braucht um den Generalisierungsfehler ggü. einem einfacheren Modell nicht zu erhöhen. Die Modelle die wir kennengelernt haben brauchen wesentlich mehr Daten für akzeptable Generalisierungsfehler.). Eigentlich ist es auch viel zu wenig um sich Gedanken über gute Features zu machen. Annahme: Wir bekommen noch mehr Daten.
+\item \textbf{Fehlermaß}: Wie sieht das gewünschte Fehlermaß aus (spielt eine Rolle für den Klassifikator, der ja den Fehler minimieren soll): False negatives sollten sehr stark bewertet werden um das Feuerrisiko zu minimieren. False positives hingegen sind akzeptabel, da ein Fehlalarm schnell durch einen Blick auf die Überwachungskamera identifiziert werden kann und niemand dort hinfahren muss.
+\end{itemize}
+
+Im folgenden verweisen wir immer wieder auf die Beispielbilder, die weiter unten angehängt sind.
+
+Die Bilder laufen zuerst durch eine \textbf{Vorverarbeitung}:
+
+\begin{itemize}
+\item \textbf{Verwacklung erkennen und entfernen}: In Bildsequenz 2 ist die Kamera stark verwackelt, was zu großen Differenzen führt (z.B. sieht man die Umrisse des Hauses). Aber auch in Bild 1 erkennt man dass der Weg verschoben ist. Unser Vorschlag: Man verschiebt eines der Bilder ein paar Pixel in verschiedene Richtungen (evtl. mit Drehung), berechnet jeweils die Differenz zum anderen Bild, und prüft ob sich die Summe aller Differenzen signifikant vermindert (Prozentualer Schwellenwert).
+\item \textbf{Farbtiefe reduzieren und Wertebereich ausnutzen}: Der Bereich der möglichen Zahlen wurde nicht ausgenutzt, so dass wir normalisiert haben um das volle Spektrum auszunutzen. Und wir haben die Farbtiefe auf 8bit Graustufen reduziert. Diese Vorverarbeitung haben wir implementiert (Siehe Funktion normalize(X, bits)).
+\item \textbf{Rauschen entfernen:} Hierfür kann ein Gauß Filter angewendet werden. Haben wir nicht implementiert.
+\end{itemize}
+
+Nun bilden wir die \textbf{Differenzen} für eine Bildsequenz von 3 Bildern. Dies haben wir implementiert (siehe Funktion compare im Anhang). Man sieht, dass der Rauch auf den Differenzbildern hervorragend zum Vorschein kommt, aber eben auch vieles Anderes. Die Differenzen sind die Grundlage für die Feature-Extraction:
+\begin{itemize}
+\item Wir berechnen Differenzen von Bild 1 zu Bild 2 ('Differenzbild1), von Bild 2 zu Bild 3 (Differenzbild2), und von Differenzbild 1 zu Differenzbild 2 (im folgenden '\textbf{summiertes Differenzbild}'). Die Differenz von Bild 1 zu Bild 3 haben wir ignoriert (kann man auch noch hinzunehmen).
+\item Bei jeder Differenz können negative Werte resultieren. Wir nehmen den absoluten Wert, um Differenzen in beide Richtungen zu unterscheiden. Aktuell unterscheiden wir noch nicht in welche Richtung die Differenz geht (kann man auch machen).
+\item Wir filtern mit der Funktion noiseThreshold kleine Differenzen heraus. Das könnte man verbessern indem man die Verteilung der Intensität ansieht und dann dynamisch den Threshold ermittelt. Sicher gibt es hier auch bessere Filter (Gaussian?) um das Rauschen zu entfernen.
+\end{itemize}
+
+Wir schlagen vor für das Differenzbild der Differenzbilder die \textbf{Zusammenhangskomponenten} (connected-regions) zu berechnen. Bei allen Sequenzen sieht man, dass Rauch immer eine connected-Region darstellt. Allerdings braucht man einen geeigneten Algorithmus mit Threshold, damit der Rauch nicht auf zu viele Regionen aufgeteilt wird.\\
+Jede Region hat dann eine Nummer und eine Größe (Anzahl der dazugehörigen Pixel. Nach dieser Vorverarbeitung kommen wir zu den eigentlichen Features:\\
+
+\textbf{Finale Features}: Gegeben eine Sequenz von 3 Bildern ($w \times h$), berechnen wir für jeden Pixel einen Vektor mit Zahlen. Die resultierenden $w \cdot h$ Vektoren sind die Eingabe für den Klassifikator. Wir schlagen folgende Features \textbf{pro Pixel} vor:
+\begin{itemize}
+\item \textbf{Höhe der Differenz} (nach Vorverarbeitung) vom summierten Differenzbild. Evtl. zusätzlich von Bild 1 zu Bild 2 und von Bild 2 zu Bild 3.
+\item \textbf{Größe der Zusammenhangskomponente} im summierten Differenzbild in der sich der Pixel befindet. Über dieses Feature kann der Klassifikator sehr kleine Zusammenhangskomponenten herausfiltern.
+\item \textbf{Wachstum der Zusammenhangskomponente}: Für jede Zusammenhangskomponente prüfen wir, wie sich ihre Größe von Differenzbild1 zu Differenzbild2 vergrößert hat (Zuordnung nicht trivial). Der Faktor ist unser Feature. Hierfür wären mehr Bilder pro Sequenz von Vorteil...
+\item \textbf{Farbwert}: Median des Grautons aller Pixel der Zusammenhangskomponente in der sich der Pixel befindet. Offen bleibt hier, welches Ursprungsbild man betrachtet für die Farbe. Das Feature ist sinnvoll, weil bestimmte Grauwerte bei Rauch sehr häufig sind und andere vermutlich selten. Grundsätzlich wird Rauch eher nicht schwarz sein (ermöglicht Abgrenzung von Schatten)
+\item \textbf{Messwert für den Detailgrad an Struktur}: Wir denken, dass Rauch den Hintergrund verwischen lässt, also die Entropie/Unruhe geringer ist. Sonne hingegen lässt Struktur nur noch deutlicher werden, sollte also eine höhere Unruhe haben. Hier muss also die Textur analysiert werden.
+\end{itemize}
+
+Wir hatten noch mehr Ideen in Richtung Verhältnis der Textur einer Zusammenhangskomponente zu der ihres Umfeldes, Erkennung von sich bewegenden Bereichen, usw., haben uns aber keine einfache Beschreibung ausdenken können.
+
+\subsection*{2. ID3}
+Da es in diesem Anwendungsbeispiel nur zwei Merkmale gibt, muss erstmal nur
+festgestellt werden, welche der beiden Merkmale die Wurzel des Baumes
+bildet. Der Rest ergibt sich von selbst. Dafür berechnen wir die Entropie für
+beide Varianten.
+
+\subsubsection*{Outlook als Wurzel}
+\tikzstyle{level 1}=[level distance=1cm, sibling distance=2.5cm]
+\tikzstyle{level 2}=[level distance=1cm, sibling distance=5.5cm]
+\tikzstyle{level 3}=[level distance=1cm, sibling distance=1.5cm]
+\tikzstyle{bag} = [rectangle, text width=4em, text centered, draw]
+\tikzstyle{decision} = [rectangle, minimum height=8pt, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{choice} = [circle, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{end} = [regular polygon, regular polygon sides=3, minimum width=8pt, fill, inner sep=0pt]
+
+\begin{tikzpicture}[grow=down,child anchor=north]
+\tiny
+\node[bag]{Outlook}
+child {
+    node[decision]{}
+    child {
+        node[bag]{\textbf{Sunny}\\Yes: 2\\No: 3}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Cool}
+                }
+                child {
+                    node[bag]{Mild}
+                }
+                child {
+                    node[bag]{Hot}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Overcast}\\Yes: 4\\No: 0}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Cool}
+                }
+                child {
+                    node[bag]{Mild}
+                }
+                child {
+                    node[bag]{Hot}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Rain}\\Yes: 3\\No: 2}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Cool}
+                }
+                child {
+                    node[bag]{Mild}
+                }
+                child {
+                    node[bag]{Hot}
+                }
+            }
+        }
+    };
+\end{tikzpicture}\\[1em]
+
+Die verbleibende Entropie berechnet sich wie folgt:
+$$
+E = t_{s}E_{s} + t_{o}E_{o} + t_{r}E_{r}
+$$
+Wobei
+\begin{align*}
+t_{s} = \frac{5}{14}\hspace{1.5em}
+t_{o} = \frac{4}{14}\hspace{1.5em}
+t_{r} = \frac{5}{14}\hspace{1.5em}
+\end{align*}
+und
+\begin{align*}
+E_{s} &= - \left( \frac{2}{5} \cdot \log_2(\frac{2}{5}) + \frac{3}{5} \cdot \log_2(\frac{3}{5})  \right) \approx 0.971\\
+E_{o} &= 0\\
+E_{s} &= - \left( \frac{3}{5} \cdot \log_2(\frac{3}{5}) + \frac{2}{5} \cdot \log_2(\frac{2}{5})  \right) \approx 0.971
+\end{align*}
+Damit:
+$$
+E = \frac{5}{14} \cdot 0.971 + 0 + \frac{5}{14} \cdot 0.971 \approx 0.694
+$$
+
+
+\subsubsection*{Temperature als Wurzel}
+\tikzstyle{level 1}=[level distance=1cm, sibling distance=2.5cm]
+\tikzstyle{level 2}=[level distance=1cm, sibling distance=5.5cm]
+\tikzstyle{level 3}=[level distance=1cm, sibling distance=1.5cm]
+\tikzstyle{bag} = [rectangle, text width=4em, text centered, draw]
+\tikzstyle{decision} = [rectangle, minimum height=8pt, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{choice} = [circle, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{end} = [regular polygon, regular polygon sides=3, minimum width=8pt, fill, inner sep=0pt]
+
+\begin{tikzpicture}[grow=down,child anchor=north]
+\tiny
+\node[rectangle, text width=6em, text centered, draw]{Temperature}
+child {
+    node[decision]{}
+    child {
+        node[bag]{\textbf{Cool}\\Yes: 3\\No: 1}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Sunny}
+                }
+                child {
+                    node[bag]{Overcast}
+                }
+                child {
+                    node[bag]{Rain}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Mild}\\Yes: 4\\No: 2}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Sunny}
+                }
+                child {
+                    node[bag]{Overcast}
+                }
+                child {
+                    node[bag]{Rain}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Hot}\\Yes: 2\\No: 2}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{Sunny}
+                }
+                child {
+                    node[bag]{Overcast}
+                }
+                child {
+                    node[bag]{Rain}
+                }
+            }
+        }
+    };
+\end{tikzpicture}\\[1em]
+
+Die verbleibende Entropie berechnet sich wie folgt:
+$$
+E = t_{c}E_{c} + t_{m}E_{m} + t_{h}E_{h}
+$$
+Wobei
+\begin{align*}
+t_{c} = \frac{4}{14}\hspace{1.5em}
+t_{m} = \frac{6}{14}\hspace{1.5em}
+t_{h} = \frac{4}{14}\hspace{1.5em}
+\end{align*}
+und
+\begin{align*}
+E_{c} &= - \left( \frac{3}{4} \cdot \log_2(\frac{3}{4}) + \frac{1}{4} \cdot \log_2(\frac{1}{4})  \right) \approx 0.811\\
+E_{m} &= - \left( \frac{4}{6} \cdot \log_2(\frac{4}{6}) + \frac{2}{6} \cdot \log_2(\frac{2}{6})  \right) \approx 0.918\\
+E_{h} &= 1\\
+\end{align*}
+Damit:
+$$
+E = \frac{4}{14} \cdot 0.811 + \frac{6}{14} \cdot 0.918 + \frac{6}{14} \cdot 1 \approx 1.054
+$$
+
+
+\subsubsection*{Der Rest des Baumes}
+Da wir nun festgestellt haben, dass nach dem ID3 Algorithmus \textit{Outlook}
+die Wurzel des Baumes bildet, müssen wir noch den Rest des Baumes
+vervollständigen:\\[3em]
+
+
+\tikzstyle{level 1}=[level distance=1cm, sibling distance=2.5cm]
+\tikzstyle{level 2}=[level distance=1cm, sibling distance=5.5cm]
+\tikzstyle{level 3}=[level distance=1cm, sibling distance=1.9cm]
+\tikzstyle{bag} = [rectangle, text width=6em, text centered, draw]
+\tikzstyle{decision} = [rectangle, minimum height=8pt, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{choice} = [circle, minimum width=8pt, fill, inner sep=0pt]
+\tikzstyle{end} = [regular polygon, regular polygon sides=3, minimum width=8pt, fill, inner sep=0pt]
+
+\begin{tikzpicture}[grow=down,child anchor=north]
+\tiny
+\node[bag]{Outlook}
+child {
+    node[decision]{}
+    child {
+        node[bag]{\textbf{Sunny}\\Yes: 2\\No: 3}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{\textbf{Cool}\\Yes: 1$\hat{=}100\%$\\No: 0$\hat{=}0\%$}
+                }
+                child {
+                    node[bag]{\textbf{Mild}\\Yes: 1$\hat{=}50\%$\\No: 1$\hat{=}50\%$}
+                }
+                child {
+                    node[bag]{\textbf{Hot}\\Yes: 0$\hat{=}0\%$\\No: 2$\hat{=}100\%$}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Overcast}\\Yes: 4\\No: 0}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{\textbf{Cool}\\Yes: 1$\hat{=}100\%$\\No: 0$\hat{=}0\%$}
+                }
+                child {
+                    node[bag]{\textbf{Mild}\\Yes: 1$\hat{=}100\%$\\No: 0$\hat{=}0\%$}
+                }
+                child {
+                    node[bag]{\textbf{Hot}\\Yes: 2$\hat{=}100\%$\\No: 0$\hat{=}0\%$}
+                }
+            }
+    }
+    child {
+        node[bag]{\textbf{Rain}\\Yes: 3\\No: 2}
+            child{
+                node[choice]{}
+                child {
+                    node[bag]{\textbf{Cool}\\Yes: 1$\hat{=}50\%$\\No: 1$\hat{=}50\%$}
+                }
+                child {
+                    node[bag]{\textbf{Mild}\\Yes: 2$\hat{\approx}66\%$\\No: $\hat{\approx}33\%$}
+                }
+                child {
+                    node[bag]{\textbf{Hot}\\Yes: 0$\hat{=}50\%$\\No: 0$\hat{=}50\%$}
+                }
+            }
+        }
+    };
+\end{tikzpicture}
+
+
+
+\end{document}

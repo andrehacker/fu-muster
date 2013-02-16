@@ -1,0 +1,132 @@
+/import/matlabR2010b/bin/matlab -nodisplay -nosplash
+ 
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2010 The MathWorks, Inc.
+                Version 7.11.0.584 (R2010b) 64-bit (glnxa64)
+                              August 16, 2010
+
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> Destroying 1 pre-existing parallel job(s) created by matlabpool that were in the 
+finished or failed state.
+
+{Warning: Found 1 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+> In distcomp.interactiveclient.pRemoveOldJobs at 59
+  In distcomp.interactiveclient.start at 57
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 199
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 173
+  In matlabpool at 130
+Starting matlabpool using the 'local' configuration ... connected to 8 labs.
+
+** TESTRUN **
+
+training-rows: 7494
+test-rows: 3498
+use k-nn? 1
+k: 5
+
+Seconds Training Feature Extraction:  0.904399
+Seconds Test Feature Extraction:  0.406490
+Seconds Prediction:  240.569589
+
+** RESULTS **
+
+hits for 0: 321
+hits for 1: 196
+hits for 2: 145
+hits for 3: 202
+hits for 4: 189
+hits for 5: 104
+hits for 6: 93
+hits for 7: 74
+hits for 8: 221
+hits for 9: 47
+Number 0, missclassified as 1: 1
+Number 0, missclassified as 5: 14
+Number 0, missclassified as 7: 1
+Number 0, missclassified as 8: 26
+Number 1, missclassified as 2: 61
+Number 1, missclassified as 3: 20
+Number 1, missclassified as 4: 35
+Number 1, missclassified as 5: 3
+Number 1, missclassified as 6: 17
+Number 1, missclassified as 7: 27
+Number 1, missclassified as 9: 5
+Number 2, missclassified as 0: 2
+Number 2, missclassified as 1: 16
+Number 2, missclassified as 3: 54
+Number 2, missclassified as 4: 68
+Number 2, missclassified as 5: 13
+Number 2, missclassified as 6: 29
+Number 2, missclassified as 7: 23
+Number 2, missclassified as 9: 14
+Number 3, missclassified as 0: 2
+Number 3, missclassified as 1: 42
+Number 3, missclassified as 2: 26
+Number 3, missclassified as 4: 14
+Number 3, missclassified as 5: 20
+Number 3, missclassified as 6: 6
+Number 3, missclassified as 7: 21
+Number 3, missclassified as 9: 3
+Number 4, missclassified as 1: 38
+Number 4, missclassified as 2: 75
+Number 4, missclassified as 3: 7
+Number 4, missclassified as 5: 14
+Number 4, missclassified as 6: 15
+Number 4, missclassified as 7: 19
+Number 4, missclassified as 9: 7
+Number 5, missclassified as 0: 15
+Number 5, missclassified as 1: 11
+Number 5, missclassified as 2: 39
+Number 5, missclassified as 3: 37
+Number 5, missclassified as 4: 33
+Number 5, missclassified as 6: 18
+Number 5, missclassified as 7: 19
+Number 5, missclassified as 8: 19
+Number 5, missclassified as 9: 40
+Number 6, missclassified as 0: 2
+Number 6, missclassified as 1: 17
+Number 6, missclassified as 2: 63
+Number 6, missclassified as 3: 36
+Number 6, missclassified as 4: 32
+Number 6, missclassified as 5: 32
+Number 6, missclassified as 7: 40
+Number 6, missclassified as 8: 1
+Number 6, missclassified as 9: 20
+Number 7, missclassified as 0: 9
+Number 7, missclassified as 1: 31
+Number 7, missclassified as 2: 57
+Number 7, missclassified as 3: 30
+Number 7, missclassified as 4: 49
+Number 7, missclassified as 5: 22
+Number 7, missclassified as 6: 69
+Number 7, missclassified as 8: 3
+Number 7, missclassified as 9: 20
+Number 8, missclassified as 0: 92
+Number 8, missclassified as 3: 1
+Number 8, missclassified as 5: 17
+Number 8, missclassified as 7: 4
+Number 8, missclassified as 9: 1
+Number 9, missclassified as 0: 4
+Number 9, missclassified as 1: 24
+Number 9, missclassified as 2: 59
+Number 9, missclassified as 3: 27
+Number 9, missclassified as 4: 17
+Number 9, missclassified as 5: 38
+Number 9, missclassified as 6: 89
+Number 9, missclassified as 7: 29
+Number 9, missclassified as 8: 2
+
+Total classifications: 3498
+Total hits: 1592
+Total misses: 1906
+ERROR RATE: 0.545
+
+>> 

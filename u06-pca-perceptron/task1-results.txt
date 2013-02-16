@@ -1,0 +1,17 @@
+Raw Data Mean Success Rate: 98.408%
+PCA Dimensions: 1 Mean Success Rate: 78.586%
+PCA Dimensions: 2 Mean Success Rate: 85.584%
+PCA Dimensions: 3 Mean Success Rate: 92.128%
+PCA Dimensions: 4 Mean Success Rate: 93.478%
+PCA Dimensions: 5 Mean Success Rate: 94.881%
+PCA Dimensions: 6 Mean Success Rate: 95.474%
+PCA Dimensions: 7 Mean Success Rate: 96.399%
+PCA Dimensions: 8 Mean Success Rate: 97.169%
+PCA Dimensions: 9 Mean Success Rate: 97.653%
+PCA Dimensions: 10 Mean Success Rate: 97.906%
+PCA Dimensions: 11 Mean Success Rate: 97.839%
+PCA Dimensions: 12 Mean Success Rate: 97.960%
+PCA Dimensions: 13 Mean Success Rate: 98.349%
+PCA Dimensions: 14 Mean Success Rate: 98.370%
+PCA Dimensions: 15 Mean Success Rate: 98.401%
+PCA Dimensions: 16 Mean Success Rate: 98.408%

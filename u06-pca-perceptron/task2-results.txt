@@ -1,0 +1,4 @@
+Generated 1000 items
+Required iterations: 754
+Initial weigth: [-0.875 -0.643 -0.323 0.761]
+Learned weigth: [-17.9 -13.2 -6.52 15.5]

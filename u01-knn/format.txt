@@ -1,0 +1,1 @@
+Jede Zeile ist ein Datensatz fuer einen Linienzug einer Ziffer bestehend aus 17 Zahlen, die durch Leerzeichen getrennt sind. Die ersten 16 Zahlen sind 8 x-y Koordinatepaare, die letzte Zahl ist die Ziffer, die der Linienzug darstellen soll.

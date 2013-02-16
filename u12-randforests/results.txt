@@ -1,0 +1,70 @@
+LIMIT 300
+M=30
+m=5
+Nb = 516
+testSize =1 83
+total_success = 0.9180
+
+M = 10
+m = 5
+Nb = 451
+testSize = 275
+total_success = 0.9200
+
+M = 10
+m = 5
+Nb =451
+testSize = 275
+total_success = 0.8873
+
+M = 20
+m = 5
+Nb =580
+testSize = 275
+total_success = 0.9273
+
+M =20
+m =5
+Nb =580
+testSize = 275
+total_success =0.9127
+
+M = 50
+m =   5
+Nb = 580
+testSize =  275
+total_success =0.8909
+
+M = 20
+m = 2
+Nb = 580
+testSize = 275
+total_success = 0.9673
+avg(depth) = 300
+
+total_success = 0.9491
+M =  20
+m =  2
+Nb = 580
+testSize = 275
+avg(depth) = 300
+max_depth = 300
+
+
+max_depth = 300
+meanDepth = 273.9000
+M =20
+m = 3
+Nb = 580
+testSize =275
+total_success =  0.9345
+
+total_success = 0.9236
+max_depth = 300
+meanDepth = 300
+M =5
+m =2
+Nb =580
+testSize =275
+
+

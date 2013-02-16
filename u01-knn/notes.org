@@ -1,0 +1,11 @@
+* U1
+** Merkmale
+   - Kumulativer Winkel
+   - Länge
+   - Start (x,y)
+   - Ende (x,y)
+   - Abstand Start, Ende
+   - Verhältnis (Abstand Start, Ende) zu Länge
+   - Anzahl der Linienzüge
+** Klassifikation
+   - Hauptkompmonente

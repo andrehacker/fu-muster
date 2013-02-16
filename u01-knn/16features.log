@@ -1,0 +1,51 @@
+
+** TESTRUN **
+
+training-rows: 7494
+test-rows: 3498
+use k-nn? 1
+k: 10
+
+Seconds Training Feature Extraction:  29.818148
+Seconds Test Feature Extraction:  13.876475
+Seconds Prediction:  1819.459688
+
+** RESULTS **
+
+hits for 0: 352
+hits for 1: 346
+hits for 2: 363
+hits for 3: 334
+hits for 4: 353
+hits for 5: 326
+hits for 6: 336
+hits for 7: 347
+hits for 8: 334
+hits for 9: 319
+Number 0, missclassified as 6: 8
+Number 0, missclassified as 8: 2
+Number 0, missclassified as 9: 1
+Number 1, missclassified as 2: 17
+Number 1, missclassified as 4: 1
+Number 2, missclassified as 1: 1
+Number 3, missclassified as 1: 1
+Number 3, missclassified as 9: 1
+Number 4, missclassified as 5: 10
+Number 4, missclassified as 6: 1
+Number 5, missclassified as 3: 8
+Number 5, missclassified as 9: 1
+Number 7, missclassified as 1: 16
+Number 7, missclassified as 2: 1
+Number 8, missclassified as 0: 1
+Number 8, missclassified as 5: 1
+Number 9, missclassified as 1: 2
+Number 9, missclassified as 3: 9
+Number 9, missclassified as 4: 1
+Number 9, missclassified as 7: 4
+Number 9, missclassified as 8: 1
+
+Total classifications: 3498
+Total hits: 3410
+Total misses: 88
+ERROR RATE: 0.025
+

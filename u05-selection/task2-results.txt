@@ -1,0 +1,11 @@
+Mean and 2*standard deviation for the first 10 samples
+Sample 1	| Mean = 1.190903 | 2 x standard deviation =  0.426602
+Sample 2	| Mean = 0.954483 | 2 x standard deviation =  0.494090
+Sample 3	| Mean = 1.323101 | 2 x standard deviation =  0.483985
+Sample 4	| Mean = 0.834844 | 2 x standard deviation =  0.531425
+Sample 5	| Mean = 1.950328 | 2 x standard deviation =  0.322340
+Sample 6	| Mean = 0.922782 | 2 x standard deviation =  0.503808
+Sample 7	| Mean = 1.942197 | 2 x standard deviation =  0.322115
+Sample 8	| Mean = 1.917087 | 2 x standard deviation =  0.321625
+Sample 9	| Mean = 1.078686 | 2 x standard deviation =  0.457431
+Sample 10	| Mean = 1.648966 | 2 x standard deviation =  0.335726

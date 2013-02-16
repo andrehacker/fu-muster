@@ -1,0 +1,40 @@
+
+** RESULTS **
+
+hits for 0: 341
+hits for 1: 350
+hits for 2: 355
+hits for 3: 320
+hits for 4: 362
+hits for 5: 323
+hits for 6: 325
+hits for 7: 314
+hits for 8: 336
+hits for 9: 329
+Number 0, missclassified as 8: 22
+Number 1, missclassified as 2: 12
+Number 1, missclassified as 4: 1
+Number 1, missclassified as 8: 1
+Number 2, missclassified as 1: 8
+Number 2, missclassified as 7: 1
+Number 3, missclassified as 1: 9
+Number 3, missclassified as 5: 1
+Number 3, missclassified as 7: 1
+Number 3, missclassified as 9: 5
+Number 4, missclassified as 9: 2
+Number 5, missclassified as 3: 1
+Number 5, missclassified as 8: 2
+Number 5, missclassified as 9: 9
+Number 6, missclassified as 8: 11
+Number 7, missclassified as 1: 28
+Number 7, missclassified as 8: 5
+Number 7, missclassified as 9: 17
+Number 9, missclassified as 1: 5
+Number 9, missclassified as 7: 1
+Number 9, missclassified as 8: 1
+
+Total classifications: 3498
+Total hits: 3355
+Total misses: 143
+ERROR RATE: 0.041
+

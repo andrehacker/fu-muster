@@ -1,0 +1,11 @@
+Fitting was always done based on Training data
+Error-rate was determined for both, Training and Test data
+
+Sum Squared Error (Training): 29.426
+Sum Squared Error (Test): 15.638
+
+Mean Squared Error (Training): 0.439
+Mean Squared Error (Test): 0.521
+
+Mean absolute Deviation (Training): 0.499
+Mean absolute Deviation (Test): 0.523

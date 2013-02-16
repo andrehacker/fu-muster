@@ -1,0 +1,36 @@
+/import/matlabR2010b/bin/matlab -nodisplay -nosplash
+ 
+
+                            < M A T L A B (R) >
+                  Copyright 1984-2010 The MathWorks, Inc.
+                Version 7.11.0.584 (R2010b) 64-bit (glnxa64)
+                              August 16, 2010
+
+ 
+  To get started, type one of these: helpwin, helpdesk, or demo.
+  For product information, visit www.mathworks.com.
+ 
+>> Destroying 1 pre-existing parallel job(s) created by matlabpool that were in the 
+finished or failed state.
+
+{Warning: Found 1 pre-existing parallel job(s) created by matlabpool that are
+running.
+You can use   'matlabpool close force local'    or create a configuration for
+the distcomp.localscheduler object and use   'matlabpool close force
+<configurationName>'    to remove all jobs created by matlabpool.} 
+> In distcomp.interactiveclient.pRemoveOldJobs at 59
+  In distcomp.interactiveclient.start at 57
+  In MatlabpoolHelper>MatlabpoolHelper.doOpen at 199
+  In MatlabpoolHelper>MatlabpoolHelper.doMatlabpool at 173
+  In matlabpool at 130
+Starting matlabpool using the 'local' configuration ... connected to 8 labs.
+
+** TESTRUN **
+
+training-rows: 7494
+test-rows: 3498
+use k-nn? 1
+k: 15
+
+Seconds Training Feature Extraction:  0.850666
+Seconds Test Feature Extraction:  0.385561

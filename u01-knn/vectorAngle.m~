@@ -1,0 +1,5 @@
+function result = vectorAngle(a, b)
+    fprintf("")
+    result = atan2(norm(cross(a,b)),dot(a,b));
+end
+
